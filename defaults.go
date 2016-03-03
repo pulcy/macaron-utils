@@ -18,9 +18,9 @@ import (
 	"gopkg.in/macaron.v1"
 )
 
-// DefaultJson creates a handler that sets the request Content-Type to `application/json` if it was not set before
+// DefaultJSON creates a handler that sets the request Content-Type to `application/json` if it was not set before
 // and the method is either POST or PUT.
-func DefaultJson() macaron.Handler {
+func DefaultJSON() macaron.Handler {
 	return func(ctx *macaron.Context) {
 		switch ctx.Req.Method {
 		case "POST", "PUT":
