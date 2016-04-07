@@ -21,15 +21,33 @@ import (
 	"gopkg.in/macaron.v1"
 )
 
+// LoggerOption is used to control the logging process
+type LoggerOption func(ctx *macaron.Context) bool
+
 // Logger creates a handler that logs the current request.
-func Logger(log *logging.Logger) macaron.Handler {
+func Logger(log *logging.Logger, options ...LoggerOption) macaron.Handler {
 	return func(ctx *macaron.Context) {
 		start := time.Now()
 
 		rw := ctx.Resp.(macaron.ResponseWriter)
 		ctx.Next()
 
+		for _, opt := range options {
+			if !opt(ctx) {
+				return
+			}
+		}
+
 		ms := int(time.Since(start) / time.Millisecond)
 		log.Infof("%s %s %d %d %d", ctx.Req.Method, ctx.Req.RequestURI, rw.Status(), rw.Size(), ms)
+	}
+}
+
+func DontLogHead() LoggerOption {
+	return func(ctx *macaron.Context) bool {
+		if ctx.Req.Method == "HEAD" {
+			return false
+		}
+		return true
 	}
 }
