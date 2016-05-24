@@ -22,7 +22,10 @@ import (
 
 // ServerInfo creates a handler that sets returns a text formatted version info.
 func ServerInfo(projectName, projectVersion, projectBuild string) macaron.Handler {
-	return func() string {
+	return func(ctx *macaron.Context) string {
+		if ctx.Req.Method == "HEAD" {
+			return ""
+		}
 		return fmt.Sprintf("%s, version %s build %s", projectName, projectVersion, projectBuild)
 	}
 }

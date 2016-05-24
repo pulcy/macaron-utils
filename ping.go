@@ -21,6 +21,10 @@ import (
 // Ping creates a handler that returns an OK response.
 func Ping() macaron.Handler {
 	return func(ctx *macaron.Context) {
+		if ctx.Req.Method == "HEAD" {
+			ctx.PlainText(200, []byte(""))
+			return
+		}
 		status := struct {
 			Status string `json:"status"`
 		}{
