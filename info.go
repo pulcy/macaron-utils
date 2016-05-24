@@ -24,6 +24,7 @@ import (
 func ServerInfo(projectName, projectVersion, projectBuild string) macaron.Handler {
 	return func(ctx *macaron.Context) string {
 		if ctx.Req.Method == "HEAD" {
+			ctx.Resp.Header().Set("Content-Length", "0")
 			return ""
 		}
 		return fmt.Sprintf("%s, version %s build %s", projectName, projectVersion, projectBuild)

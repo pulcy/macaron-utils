@@ -22,6 +22,7 @@ import (
 func Ping() macaron.Handler {
 	return func(ctx *macaron.Context) {
 		if ctx.Req.Method == "HEAD" {
+			ctx.Header().Set("Content-Length", "0")
 			ctx.PlainText(200, []byte(""))
 			return
 		}
