@@ -51,3 +51,29 @@ func DontLogHead() LoggerOption {
 		return true
 	}
 }
+
+// DontLog avoids a log message when the request matches the given method.
+// If you path Path's, log messages are only avoided when one of the path's matches.
+func DontLog(method string, paths ...string) LoggerOption {
+	return func(ctx *macaron.Context) bool {
+		if ctx.Req.Method != method {
+			return true
+		}
+		if len(paths) == 0 {
+			// No paths provided, skip always
+			return false
+		}
+		path := "/"
+		if ctx.Req.URL != nil {
+			path = ctx.Req.URL.Path
+		}
+		for _, p := range paths {
+			if p == path {
+				// Path matches, avoid logging
+				return false
+			}
+		}
+		// No path matches, do log
+		return true
+	}
+}
